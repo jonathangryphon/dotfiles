@@ -1,6 +1,6 @@
 # CLI apps
-brew "git"
 brew "cmatrix"
+brew "gh"
 
 # GUI apps
 cask "anki"
