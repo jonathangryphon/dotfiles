@@ -18,6 +18,9 @@ git clone https://github.com/jonathangryphon/dotfiles.git ~/dev/dotfiles
 echo "Running through Brewfile to install software and cli..."
 brew bundle --file="$HOME/dev/dotfiles/Brewfile"
 
+echo "Running macOS defaults..."
+bash ~/dev/dotfiles/macos-defaults.sh
+
 echo "Generating SSH key..."
 ssh-keygen -t ed25519 -C "macbook-pro-2021"
 

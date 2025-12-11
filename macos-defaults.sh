@@ -16,3 +16,11 @@ defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock tilesize -int 36
 defaults write com.apple.dock minimize-to-application -bool true
 killall Dock
+
+mkdir -p ~/Screenshots
+defaults write com.apple.screencapture location ~/Screenshots
+defaults write com.apple.screencapture type -string "png"
+defaults write com.apple.screencapture disable-shadow -bool true
+killall SystemUIServer
+
+echo "macOS defaults applied successfully!"
