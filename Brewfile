@@ -1,0 +1,23 @@
+# CLI apps
+brew "git"
+brew "cmatrix"
+
+# GUI apps
+cask "anki"
+cask "balenaetcher"
+cask "bitwarden"
+cask "cryptomator"
+cask "ente-auth"
+cask "firefox"
+cask "google-chrome"
+cask "orion"
+cask "joplin"
+cask "proton-drive"
+cask "proton-vpn"
+cask "qbittorrent"
+cask "signal"
+cask "whatsapp"
+cask "spotify"
+cask "utm"
+cask "vlc"
+cask "wireguard"
