@@ -1,3 +1,6 @@
+# to run script on fresh install, paste the following command into terminal
+# curl -fsSL https://raw.githubusercontent.com/jonathangryphon/dotfiles/main/bootstrap.sh | bash
+
 #!/usr/bin/env bash
 
 echo "Installing Xcode Command Line Tools..."
