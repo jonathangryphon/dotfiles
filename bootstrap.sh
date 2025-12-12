@@ -1,50 +1,118 @@
 # to run script on fresh install, paste the following command into terminal
-# curl -fsSL https://raw.githubusercontent.com/jonathangryphon/dotfiles/main/bootstrap.sh | bash
+# curl -fsSL https://raw.githubusercontent.com/username/dotfiles/main/bootstrap.sh | bash
 
 #!/usr/bin/env bash
+set -e
 
-echo "Installing Xcode Command Line Tools..."
-xcode-select --install
+echo "=== Bootstrap starting ==="
 
-echo "Installing Homebrew..."
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+###
+# XCODE COMMAND LINE TOOLS
+###
+echo "Checking Xcode Command Line Tools..."
+if xcode-select -p &>/dev/null; then
+    echo "✓ Xcode Command Line Tools already installed."
+else
+    echo "Installing Xcode Command Line Tools..."
+    xcode-select --install
+    # Wait until installed
+    until xcode-select -p &>/dev/null; do
+        sleep 3
+    done
+fi
 
-echo "Creating /dev folder"
-mkdir -p ~/dev
+###
+# HOMEBREW
+###
+echo "Checking Homebrew..."
+if command -v brew >/dev/null 2>&1; then
+    echo "✓ Homebrew already installed."
+else
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-echo "Cloning dotfiles repo..."
-git clone https://github.com/jonathangryphon/dotfiles.git ~/dev/dotfiles
+    # Add to PATH for non-interactive shells
+    eval "$(/opt/homebrew/bin/brew shellenv)" 2>/dev/null || true
+fi
 
-echo "Running through Brewfile to install software and cli..."
-brew bundle --file="$HOME/dev/dotfiles/Brewfile"
+###
+# DEV FOLDER
+###
+DEV_DIR="$HOME/dev"
 
-echo "Running macOS defaults..."
-bash ~/dev/dotfiles/macos-defaults.sh
+echo "Checking ~/dev folder..."
+if [[ -d "$DEV_DIR" ]]; then
+    echo "✓ ~/dev already exists."
+else
+    echo "Creating ~/dev folder..."
+    mkdir -p "$DEV_DIR"
+fi
 
-echo "Generating SSH key..."
-ssh-keygen -t ed25519 -C "macbook-pro-2021"
+###
+# DOTFILES REPO
+###
+DOTFILES_DIR="$DEV_DIR/dotfiles"
 
-PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)
+echo "Checking dotfiles repo..."
+if [[ -d "$DOTFILES_DIR" ]]; then
+    echo "✓ Dotfiles repo already exists. Pulling latest..."
+    git -C "$DOTFILES_DIR" pull --rebase
+else
+    echo "Cloning dotfiles repo..."
+    git clone https://github.com/jonathangryphon/dotfiles.git "$DOTFILES_DIR"
+fi
+
+###
+# BREWFILE
+###
+echo "Running Brew bundle..."
+brew bundle --file="$DOTFILES_DIR/Brewfile"
+
+
+###
+# MACOS DEFAULTS
+###
+if [[ -f "$DOTFILES_DIR/macos-defaults.sh" ]]; then
+    echo "Applying macOS defaults..."
+    bash "$DOTFILES_DIR/macos-defaults.sh"
+else
+    echo "⚠️ macos-defaults.sh not found, skipping."
+fi
+
+###
+# SSH KEY
+###
+SSH_KEY="$HOME/.ssh/id_ed25519"
+
+echo "Checking SSH key..."
+if [[ -f "$SSH_KEY" ]]; then
+    echo "✓ SSH key already exists."
+else
+    echo "Generating SSH key..."
+    ssh-keygen -t ed25519 -C "macbook-pro-2021" -f "$SSH_KEY" -N ""
+fi
+
+PUBLIC_KEY=$(cat "${SSH_KEY}.pub")
 
 echo ""
 echo "=================================================="
-echo " SSH KEY GENERATED — ADD TO GITHUB"
+echo " Your SSH Public Key:"
 echo "=================================================="
-echo ""
-echo "Your public SSH key is below:"
-echo ""
 echo "$PUBLIC_KEY"
 echo ""
-echo "It has also been copied to your clipboard."
+echo "Copying to clipboard..."
 echo "$PUBLIC_KEY" | pbcopy
 echo ""
 echo "Opening GitHub SSH key page..."
 open "https://github.com/settings/keys"
-echo ""
-echo "Paste the key into GitHub and you're done!"
+echo "=================================================="
+echo "Add the key to GitHub!"
 echo "=================================================="
 echo ""
+
+
+###
+# DONE
+###
 echo "Bootstrap completed successfully."
-
-
 echo "Done!"
