@@ -62,11 +62,52 @@ else
     git clone https://github.com/jonathangryphon/dotfiles.git "$DOTFILES_DIR"
 fi
 
+
 ###
-# BREWFILE
+# SAFE BREW BUNDLE INSTALL (IDEMPOTENT + AUTOHEAL)
 ###
-echo "Running Brew bundle..."
-brew bundle --file="$DOTFILES_DIR/Brewfile"
+BREWFILE="$DOTFILES_DIR/Brewfile"
+
+echo "Running Brew bundle (with auto-repair)..."
+
+run_brew_bundle() {
+    echo ""
+    echo "→ Running brew bundle..."
+    if brew bundle --file="$BREWFILE"; then
+        echo "✓ Brew bundle completed successfully."
+        return 0
+    else
+        return 1
+    fi
+}
+
+if ! run_brew_bundle; then
+    echo "⚠️ brew bundle failed — checking for cask conflicts…"
+
+    # Loop through each cask in the Brewfile
+    grep -E '^cask ' "$BREWFILE" | awk -F\" '{print $2}' | while read -r cask; do
+
+        echo "Testing cask: $cask"
+
+        OUT=$(brew install --cask "$cask" 2>&1 || true)
+
+        if echo "$OUT" | grep -q "different from the one being installed"; then
+            echo "   → Fixing conflict for $cask"
+
+            APP_PATH=$(brew info --cask "$cask" | awk '/==> / {print $3}')
+
+            if [[ -n "$APP_PATH" ]]; then
+                sudo rm -rf "/Applications/$APP_PATH.app"
+            fi
+
+            brew install --cask "$cask" || true
+        fi
+
+    done
+
+    echo "Retrying brew bundle..."
+    brew bundle --file="$BREWFILE" || echo "⚠️ Some Brewfile items failed — continuing anyway."
+fi
 
 
 ###
