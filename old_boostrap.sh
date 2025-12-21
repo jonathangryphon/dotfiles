@@ -48,3 +48,5 @@ echo "Bootstrap completed successfully."
 
 
 echo "Done!"
+echo "I just tested git with new key on macbook pro 2016"
+
