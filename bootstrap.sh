@@ -122,6 +122,11 @@ else
 fi
 
 ###
+# GIT DEFAULTS
+###
+git config --global url."git@github.com:".insteadOf "https://github.com/"
+
+###
 # SSH KEY
 ###
 SSH_KEY="$HOME/.ssh/id_ed25519"
