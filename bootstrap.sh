@@ -56,8 +56,8 @@ DOTFILES_DIR="$DEV_DIR/dotfiles"
 
 echo "Checking dotfiles repo..."
 if [[ -d "$DOTFILES_DIR" ]]; then
-    echo "✓ Dotfiles repo already exist."
-else
+    echo "✓ Dotfiles repo already exist Creating backup and cloning."
+    mv "$DOTFILES_DIR" "${DOTFILES_DIR}_backup_$(date + %s)"
     echo "Cloning dotfiles repo..."
     git clone https://github.com/jonathangryphon/dotfiles.git "$DOTFILES_DIR"
 fi
