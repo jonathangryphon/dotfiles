@@ -20,8 +20,21 @@ killall Finder
 defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock tilesize -int 100
 defaults write com.apple.dock minimize-to-application -bool true
+defaults write com.apple.dock persistent-apps -array
+defaults write com.apple.dock persistent-others -array
+
+# --- Dock app tweaks ---
+dockutil --no-restart --add /System/Library/CoreServices/Finder.app
+dockutil --no-restart --add /Applications/Orion.app
+dockutil --no-restart --add /Applications/Spotify.app
+dockutil --no-restart --add /Applications/Signal.app
+dockutil --no-restart --add /Applications/WhatsApp.app
+dockutil --no-restart --add "/Applications/Ente Auth.app"
+dockutil --no-restart --add /Applications/Joplin.app
+dockutil --no-restart --add /System/Applications/Notes.app
 killall Dock
 
+# --- Screenshot tweaks ---
 mkdir -p ~/Screenshots
 defaults write com.apple.screencapture location ~/Screenshots
 defaults write com.apple.screencapture type -string "png"
