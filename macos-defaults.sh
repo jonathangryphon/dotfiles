@@ -24,15 +24,29 @@ defaults write com.apple.dock persistent-apps -array
 defaults write com.apple.dock persistent-others -array
 
 # --- Dock app tweaks ---
-dockutil --no-restart --add /System/Library/CoreServices/Finder.app
-dockutil --no-restart --add /Applications/Orion.app
-dockutil --no-restart --add /Applications/Spotify.app
-dockutil --no-restart --add /Applications/Signal.app
-dockutil --no-restart --add /Applications/WhatsApp.app
-dockutil --no-restart --add "/Applications/Ente Auth.app"
-dockutil --no-restart --add /Applications/Joplin.app
-dockutil --no-restart --add /System/Applications/Notes.app
-killall Dock
+echo "Configuring Dock..."
+
+if command -v dockutil &>/dev/null; then
+    echo "✓ dockutil found, setting up Dock..."
+
+    # Clear Dock
+    defaults write com.apple.dock persistent-apps -array
+    defaults write com.apple.dock persistent-others -array
+
+    # Add apps (adjust paths as needed)
+    dockutil --no-restart --add /System/Library/CoreServices/Finder.app
+    dockutil --no-restart --add /Applications/Orion.app
+    dockutil --no-restart --add /Applications/Spotify.app
+    dockutil --no-restart --add /Applications/Signal.app
+    dockutil --no-restart --add /Applications/WhatsApp.app
+    dockutil --no-restart --add "/Applications/Ente Auth.app"
+    dockutil --no-restart --add /Applications/Joplin.app
+    dockutil --no-restart --add /System/Applications/Notes.app
+
+    killall Dock
+else
+    echo "⚠️ dockutil not installed or unsupported on this Mac, skipping Dock setup."
+fi
 
 # --- Screenshot tweaks ---
 mkdir -p ~/Screenshots
