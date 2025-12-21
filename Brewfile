@@ -1,6 +1,7 @@
 # CLI apps
 brew "cmatrix"
 brew "gh"
+brew "dockutil"
 
 # GUI apps
 cask "anki"
