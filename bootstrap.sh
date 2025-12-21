@@ -1,6 +1,5 @@
 # to run script on fresh install, paste the following command into terminal
-# sudo curl -fsSL 
-https://raw.githubusercontent.com/username/dotfiles/main/bootstrap.sh | bash
+# sudo curl -fsSL https://raw.githubusercontent.com/username/dotfiles/main/bootstrap.sh | bash
 
 #!/usr/bin/env bash
 set -e
